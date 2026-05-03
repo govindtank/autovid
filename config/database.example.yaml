@@ -1,0 +1,22 @@
+# AutoVid Configuration - Database Settings
+# Copy this file to config/database.yaml and customize
+
+# PostgreSQL (Recommended for production)
+postgresql:
+  host: localhost
+  port: 5432
+  database: autovid
+  username: autovid
+  password: autovid
+  echo: false  # Set to true for SQL debugging
+  
+# Connection string format (alternative):
+# connection_url: postgresql://autovid:autovid@localhost:5432/autovid
+
+# SQLite (Development only - simpler setup)
+sqlite:
+  path: backend/database.db
+  pool_size: 1
+
+# Default provider
+default_provider: postgresql

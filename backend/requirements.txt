@@ -1,0 +1,42 @@
+# AutoVid Backend Dependencies
+# Install: pip install -r backend/requirements.txt
+
+# Web Framework
+fastapi==0.115.0
+uvicorn[standard]==0.32.1
+python-multipart==0.0.16
+
+# API Client for LLM Services
+httpx==0.28.1
+openai==1.58.1
+huggingface-hub==0.28.1
+
+# Async Task Queue (for long-running video generation)
+celery==5.4.0
+redis==5.2.0
+
+# Database ORM & Migration
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.10
+alembic==1.14.0
+
+# Media Processing (video merging, editing)
+opencv-python-headless==4.10.0.84
+moviepy==1.0.3
+pillow==11.1.0
+
+# Video Codec Handling
+av==13.2.0
+
+# TTS/Text-to-Speech Services
+coqui-tts==0.21.0
+edge-tts==6.1.9
+
+# Utilities
+pyyaml==6.0.2
+pydantic==2.10.4
+python-dotenv==1.0.1
+requests==2.32.3
+
+# Logging & Monitoring
+loguru==0.7.2

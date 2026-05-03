@@ -1,0 +1,85 @@
+# AutoVid Configuration - Service Settings
+# Copy this file to config/services.yaml and add your API keys
+
+service:
+  # Video resolution (width, height)
+  resolution: [1920, 1080]
+  
+  # Scene duration in seconds (default per scene before voice sync)
+  default_scene_duration: 5.0
+  
+  # Output video settings
+  fps: 30
+  codec: libx264  # Options: libx264, libx265, h264_qsv (NVIDIA), vpx_vp9 (Chrome)
+
+llm:
+  # LLM provider for scene decomposition
+  provider: openai
+  
+  openai:
+    api_key: ${OPENAI_API_KEY}  # Replace with your actual key
+    model: gpt-4o
+    
+  huggingface:
+    enabled: false
+    api_token: ${HF_TOKEN}
+    model_id: microsoft/Phi-3-mini-4k-instruct
+  
+  azure:
+    enabled: false
+    endpoint: ${AZURE_ENDPOINT}
+    key: ${AZURE_KEY}
+
+pexels:
+  # Pexels API for stock video download
+  api_key: ${PEXELS_API_KEY}  # Get free at https://www.pexels.com/api/
+  
+  # Search preferences
+  search_prefs:
+    orientation: landscape  # Options: landscape, portrait, square
+    min_duration_minutes: 5  # Minimum video duration
+  
+  # Fallback strategy
+  fallback_to_pixabay: true
+
+pixabay:
+  # Pixabay API (optional - used if Pexels rate limited)
+  api_key: ${PIXABAY_API_KEY}  # Get free at https://pixabay.com/api/
+  
+  enabled: false
+
+tts:
+  # TTS provider for voice synthesis
+  provider: edge-tts
+  
+  coqui:
+    enabled: false
+    model_name: tts_models/en/ljspeech/tacotron2-DDC
+  
+  edge_tts:
+    enabled: true
+    voices:
+      en-US-JennyNeural: friendly female (default)
+      en-US-GuyNeural: friendly male
+      en-GB-SoniaNeural: British English
+      es-ES-ElviraNeural: Spanish
+  
+  azure:
+    enabled: false
+    subscription_key: ${AZURE_TTS_KEY}
+
+# Task queue settings (Celery + Redis)
+task_queue:
+  redis:
+    host: localhost
+    port: 6379
+    db: 0
+  celery:
+    broker_url: redis://localhost:6379/0
+    result_backend: redis://localhost:6379/0
+
+# Cache settings (Redis)
+cache:
+  redis_host: localhost
+  redis_port: 6379
+  ttl_seconds: 300  # Cache lifetime

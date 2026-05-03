@@ -1,0 +1,32 @@
+# AutoVid Docker Compose
+version: '3.8'
+
+services:
+  # Backend API Service
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: autovid-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PEXELS_API_KEY=${PEXELS_API_KEY}
+    volumes:
+      - ./config:/app/config:ro
+      - /output:/output  # Shared volume for generated videos
+    depends_on:
+      - redis
+
+  # Redis Cache (for task queue)
+  redis:
+    image: redis:alpine
+    container_name: autovid-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
