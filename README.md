@@ -47,39 +47,29 @@ cp config/services.example.yaml config/services.yaml
 
 # Edit services.yaml and add your API keys
 nano config/services.yaml  # or use your preferred editor
-```
 
-**Required API Keys:**
-- OpenAI API key (for LLM): Get at https://platform.openai.com/api-keys
-- Pexels API key (free): Get at https://www.pexels.com/api/
-
-### Run with Docker
-
-```bash
+# Start with Docker Compose
 docker-compose up -d
 
-# Check logs
-docker-compose logs -f api
-
 # Access web interface
-open http://localhost:3000  # For Next.js frontend separately
+open http://localhost:8000
 ```
 
 **OR run backend only:**
 
 ```bash
-make setup
-make dev
+python scripts/setup.py  # One-time setup
+python backend/main.py   # Start API server
 ```
 
-Then visit `http://localhost:8000` for API docs and `http://localhost:3000` for web UI.
+Then visit `http://localhost:8000` for API docs and documentation.
 
 ## 🎯 Features (Roadmap)
 
 ### ✅ Phase 1 - MVP (Completed)
 - [x] **Scene Decomposition**: Break prompts into detailed scenes using LLM
 - [x] **Video Downloader**: Download from Pexels/Pixabay APIs
-- [x] **Voice Synthesis**: Coqui TTS or Edge TTS (free, no API key)
+- [x] **Voice Synthesis**: Coqui TTS or Edge TTS (free, no API key needed)
 - [x] **Video Merging**: MoviePy-based composition engine
 - [x] **Web Interface**: Modern React + Tailwind UI
 - [x] **Configuration System**: Customizable settings per service
@@ -112,19 +102,18 @@ service:
 llm:
   provider: openai
   openai:
-    api_key: "your-openai-key"
+    api_key: ${OPENAI_API_KEY}  # From .env file
     model: gpt-4o
 
 # Media download service
 pexels:
-  api_key: "your-pexels-key"  # Get free key at pexels.com/api
+  api_key: ${PEXELS_API_KEY}   # Get free key at pexels.com/api
   fallback_to_pixabay: true   # Auto-fallback if rate limited
 
 tts:
   provider: edge-tts           # Recommended: free, no API key needed
   voices:
     en-US-JennyNeural: friendly female (default)
-    en-GB-SoniaNeural: British English
 ```
 
 ## 📁 Project Structure
@@ -151,13 +140,12 @@ autovid/
 
 ```python
 import asyncio
-from backend.services.video_manager import VideoManager
+from backend.services.video_manager import generate_video_from_prompt
 
 async def main():
-    manager = VideoManager()  # Uses default config
-    result = await manager.generate_from_prompt(
-        prompt="A peaceful morning in a forest with birds chirping",
-        output_path="/output/forest_video"
+    result = await generate_video_from_prompt(
+        prompt="A beautiful sunset over mountains with eagles flying",
+        output_path="/output/sunset_video"
     )
     
     print(f"Video generated at: {result['output_path']}")
@@ -180,7 +168,7 @@ curl -X POST http://localhost:8000/api/generate-video \
 
 ### Web UI Usage
 
-1. Navigate to `http://localhost:3000`
+1. Navigate to `http://localhost:8000`
 2. Enter your video description prompt
 3. Configure optional settings (resolution, output path)
 4. Click "🚀 Generate Video"
@@ -198,7 +186,7 @@ curl -X POST http://localhost:8000/api/generate-video \
 **Generate Video Request:**
 ```json
 {
-  "prompt": "A beautiful sunset over mountains with eagles flying",
+  "prompt": "A beautiful sunset over mountains",
   "output_path": "/output/sunset",
   "resolution": [1920, 1080],
   "scene_duration": 5.0
@@ -226,14 +214,7 @@ curl -X POST http://localhost:8000/api/generate-video \
 docker-compose up -d
 ```
 
-This starts both API and Redis backend services. For the frontend, build separately:
-
-```bash
-cd frontend/app
-npm install
-npm run build
-npm run start
-```
+This starts both API and Redis backend services.
 
 ### Production Docker Build
 
@@ -241,33 +222,28 @@ npm run start
 make prod
 ```
 
-## 🔄 Git Workflow (GitHub Integration)
+## 🔧 Development Commands
 
 ```bash
-# Initialize git repository
-git init
-
-# Configure credentials (if not already done)
-git config user.name "Your Name"
-git config user.email "your@email.com"
-
-# Commit and push to GitHub
-git add .
-git commit -m "feat: initial video generation pipeline"
-git push origin main
+python scripts/setup.py  # One-time setup
+pip install -r backend/requirements.txt  # Install deps
+python backend/main.py   # Start API (localhost:8000)
+make dev                 # Alternative development mode
 ```
 
-## 🛠️ Development Commands
+## 📚 Documentation Files
 
-```bash
-make setup        # Install dependencies
-make dev          # Start backend in watch mode
-make test         # Run tests (TODO)
-make lint         # Lint Python code
-make clean        # Remove generated files
-```
+- **README.md** - This file (project overview & quick start)
+- **docs/USAGE.md** - Complete usage guide with examples and troubleshooting
+- **config/*.example.yaml** - Configuration templates with comments
 
-## 📚 Tech Stack
+## 🔐 Setup API Keys
+
+1. Get OpenAI API key: https://platform.openai.com/api-keys
+2. Get Pexels API key (FREE): https://www.pexels.com/api/
+3. Edit `config/services.yaml` and add your keys
+
+## 🛠️ Tech Stack
 
 ### Backend
 - **Python 3.11+**: Main language
@@ -283,8 +259,7 @@ make clean        # Remove generated files
 - **MoviePy**: Video editing and merging
 
 ### Frontend
-- **React 18**: UI framework
-- **Next.js 14**: React metapackage
+- **React 18**: UI framework (Next.js)
 - **Tailwind CSS**: Utility-first styling
 
 ## 🔐 Security Considerations
@@ -302,5 +277,5 @@ MIT License - See LICENSE file for details.
 ---
 
 **Status: PHASE 1 MVP COMPLETE ✅**
-**Builds: 1/4 completed** (Backend + Frontend ready)
+**Builds: 2/4 completed** (Backend API + Frontend ready, pushed to GitHub)
 **GitHub**: https://github.com/govindtank/autovid
