@@ -1,281 +1,234 @@
-# 🎬 AutoVid - AI-Powered Video Generation Platform
+# AutoVid - AI-Powered Video Generation Platform
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![Status](https://img.shields.io/badge/status-active-green.svg)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen.svg)]()
 
-## 📋 Project Overview
+AutoVid is an AI-powered video generation platform that transforms text prompts into polished videos. It intelligently decomposes prompts into visual scenes, downloads matching stock footage, synthesizes voice-over narration, and composes everything into a final video.
 
-AutoVid is an AI-powered video generation platform that:
-- ✅ Accepts text prompts from users
-- ✅ Decomposes prompts into multiple visual scenes using LLM
-- ✅ Downloads matching free/open-source videos from Pexels/Pixabay
-- ✅ Synthesizes voice-over using TTS models (Coqui/Edge TTS)
-- ✅ Merges all media into a single video with synchronized audio
-- ✅ Fully customizable pipeline (resolution, timing, file sizes)
-- ✅ Cross-platform web interface (runs on any OS/browser)
+## Features
 
-## 🏗️ Architecture
+- **AI Scene Decomposition** - LLM-powered breakdown of prompts into visual scenes
+- **Stock Video Download** - Automatic downloads from Pexels/Pixabay APIs (1080p landscape)
+- **Voice Synthesis** - Natural narration using Edge TTS (free, no API key) or Coqui
+- **Smart Composition** - MoviePy-based merging with audio synchronization
+- **Web Interface** - Modern React/Next.js UI with real-time progress tracking
+- **Configurable Output** - Adjustable resolution, timing, and export options
 
-```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   Web Frontend  │────▶│   FastAPI Backend │────▶│    Services     │
-│   (React/TS)    │     │                  │     │  (Media/TTS)    │
-└─────────────────┘     └──────────────────┘     └─────────────────┘
-                              │
-                              ▼
-                      ┌──────────────────┐
-                      │ PostgreSQL +    │
-                      │ Redis Cache      │
-                      └──────────────────┘
-```
+## Tech Stack
 
-## 🚀 Quick Start (Docker)
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js 14, React 18, Tailwind CSS, TypeScript |
+| Backend | FastAPI, Python 3.10+, Uvicorn |
+| Database | PostgreSQL (SQLite for dev) |
+| Media | MoviePy, FFmpeg |
+| Voice | Edge TTS, Coqui TTS |
+
+## Quick Start
 
 ### Prerequisites
-- Docker & Docker Compose installed
 
-### Installation
+- Python 3.10+
+- FFmpeg
+- API keys (see [Configuration](#configuration))
+
+### Option 1: Docker (Recommended)
 
 ```bash
-cd ~/hermes_projects/autovid
-
-# Copy configuration templates
-cp config/database.example.yaml config/database.yaml
+# Clone and configure
 cp config/services.example.yaml config/services.yaml
+# Edit config/services.yaml with your API keys
 
-# Edit services.yaml and add your API keys
-nano config/services.yaml  # or use your preferred editor
-
-# Start with Docker Compose
+# Start services
 docker-compose up -d
 
-# Access web interface
-open http://localhost:8000
+# Access at http://localhost:8000
 ```
 
-**OR run backend only:**
+### Option 2: Local Development
 
 ```bash
-python scripts/setup.py  # One-time setup
-python backend/main.py   # Start API server
+# Install dependencies
+pip install -r requirements.txt
+
+# Setup environment
+python scripts/setup.py
+
+# Configure API keys
+cp config/services.example.yaml config/services.yaml
+
+# Start backend
+python backend/main.py
+
+# In another terminal, start frontend
+cd frontend && npm install && npm run dev
 ```
 
-Then visit `http://localhost:8000` for API docs and documentation.
+### Option 3: Make Commands
 
-## 🎯 Features (Roadmap)
+```bash
+make setup    # Install dependencies
+make dev      # Start in development mode
+make prod     # Build and start production
+make clean    # Remove generated files
+```
 
-### ✅ Phase 1 - MVP (Completed)
-- [x] **Scene Decomposition**: Break prompts into detailed scenes using LLM
-- [x] **Video Downloader**: Download from Pexels/Pixabay APIs
-- [x] **Voice Synthesis**: Coqui TTS or Edge TTS (free, no API key needed)
-- [x] **Video Merging**: MoviePy-based composition engine
-- [x] **Web Interface**: Modern React + Tailwind UI
-- [x] **Configuration System**: Customizable settings per service
-- [x] **Async Pipeline**: Concurrent downloads and TTS processing
+## Configuration
 
-### 🔄 Phase 2 - In Progress
-- [ ] Thumbnail preview generation
-- [ ] Subtitle auto-generation from voice text
-- [ ] Multiple export formats (MP4/WebM)
-- [ ] Batch processing for multiple prompts
-
-### 🚀 Phase 3 - Future
-- [ ] Cloud storage integration (S3-compatible)
-- [ ] Real-time streaming output
-- [ ] Advanced audio mixing/volume balancing
-- [ ] Scene-specific music/background audio
-
-## 🛠️ Configuration
-
-Edit `config/services.yaml`:
+Create `config/services.yaml` from the example template:
 
 ```yaml
-# Resolution and duration settings
 service:
-  resolution: [1920, 1080]  # Width × Height
-  fps: 30                    # Frames per second
-  codec: libx264            # Options: libx264, h264_qsv (NVIDIA)
+  resolution: [1920, 1080]
+  default_scene_duration: 5.0
+  fps: 30
 
-# LLM for scene decomposition
 llm:
   provider: openai
   openai:
-    api_key: ${OPENAI_API_KEY}  # From .env file
+    api_key: "your-openai-key"
     model: gpt-4o
 
-# Media download service
 pexels:
-  api_key: ${PEXELS_API_KEY}   # Get free key at pexels.com/api
-  fallback_to_pixabay: true   # Auto-fallback if rate limited
+  api_key: "your-pexels-key"  # Free at https://www.pexels.com/api/
+  fallback_to_pixabay: true
 
 tts:
-  provider: edge-tts           # Recommended: free, no API key needed
-  voices:
-    en-US-JennyNeural: friendly female (default)
+  provider: edge-tts  # Free, no API key needed
+  edge_tts:
+    enabled: true
+    voice: en-US-JennyNeural
 ```
 
-## 📁 Project Structure
+### API Keys
 
-```
-autovid/
-├── backend/          # FastAPI service
-│   ├── api/          # API routes and endpoints
-│   ├── core/         # Core logic modules
-│   ├── models/       # SQLAlchemy ORM models
-│   ├── services/     # External service integrations
-│   │   └── video_manager.py  # Main pipeline orchestrator
-│   └── main.py       # FastAPI app entry point
-├── frontend/app/     # React web interface (Next.js)
-├── config/           # YAML configuration files
-├── docker/           # Docker & orchestration
-├── ci/               # GitHub Actions CI/CD
-└── scripts/          # Utility scripts (db init, etc.)
-```
+| Service | Required | Notes |
+|---------|----------|-------|
+| OpenAI | Yes* | For scene decomposition |
+| Pexels | Yes | Free tier available at pexels.com/api |
+| Pixabay | No | Fallback option |
+| Edge TTS | No | Completely free |
 
-## 🧪 Usage Examples
+*HuggingFace can be used as an alternative LLM provider
 
-### Python API Usage
+## API Usage
 
-```python
-import asyncio
-from backend.services.video_manager import generate_video_from_prompt
-
-async def main():
-    result = await generate_video_from_prompt(
-        prompt="A beautiful sunset over mountains with eagles flying",
-        output_path="/output/sunset_video"
-    )
-    
-    print(f"Video generated at: {result['output_path']}")
-    print(f"Duration: {result['duration']:.1f}s")
-
-asyncio.run(main())
-```
-
-### Curl API Call
+### REST Endpoint
 
 ```bash
 curl -X POST http://localhost:8000/api/generate-video \
   -H "Content-Type: application/json" \
   -d '{
-    "prompt": "A beautiful sunset over mountains",
-    "output_path": "/output/sunset",
-    "resolution": [1920, 1080]
+    "prompt": "A peaceful morning in a forest with sunlight filtering through trees",
+    "output_path": "output/forest",
+    "resolution": [1920, 1080],
+    "scene_duration": 5.0
   }'
 ```
 
-### Web UI Usage
+### Python API
 
-1. Navigate to `http://localhost:8000`
-2. Enter your video description prompt
-3. Configure optional settings (resolution, output path)
-4. Click "🚀 Generate Video"
-5. Wait for processing (1-2 minutes)
-6. Download the final video
+```python
+import asyncio
+from backend.services.video_manager import generate_video_from_prompt
 
-## 📝 API Documentation
+async def create_video():
+    result = await generate_video_from_prompt(
+        prompt="A beautiful sunset over mountains with eagles flying",
+        output_path="output/sunset"
+    )
+    print(f"Video generated: {result['output_path']}")
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/generate-video` | POST | Generate video from prompt |
-| `/api/health` | GET | Health check endpoint |
-| `/` | GET | API info and documentation |
-
-**Generate Video Request:**
-```json
-{
-  "prompt": "A beautiful sunset over mountains",
-  "output_path": "/output/sunset",
-  "resolution": [1920, 1080],
-  "scene_duration": 5.0
-}
+asyncio.run(create_video())
 ```
 
-**Response:**
-```json
-{
-  "task_id": "vid-abc123def4",
-  "status": "completed",
-  "progress": 100.0,
-  "scenes_count": 4,
-  "output_path": "/output/sunset/final_output.mp4",
-  "duration": 18.5,
-  "created_at": "2026-05-03T15:30:00"
-}
+## Project Structure
+
+```
+autovid/
+├── backend/              # FastAPI backend
+│   ├── api/             # API routes
+│   ├── models/          # Database models
+│   ├── services/        # Core services
+│   │   ├── core_services.py    # Service interfaces
+│   │   └── video_manager.py    # Pipeline orchestrator
+│   └── main.py         # Application entry point
+├── frontend/           # Next.js web interface
+│   ├── app/           # Pages and components
+│   └── package.json   # Dependencies
+├── config/            # Configuration files
+│   ├── services.example.yaml
+│   └── database.example.yaml
+├── docker/            # Docker deployment
+│   ├── Dockerfile
+│   └── docker-compose.yml
+├── scripts/           # Utility scripts
+│   ├── setup.py
+│   ├── test.py
+│   └── init_db.py
+├── docs/              # Documentation
+│   └── USAGE.md
+├── requirements.txt   # Python dependencies
+└── README.md
 ```
 
-## 🐳 Docker Deployment
+## Pipeline Flow
 
-### Start with Docker Compose
+```
+User Prompt
+    ↓
+Scene Decomposition (LLM)
+    ↓
+Video Download (Pexels/Pixabay)
+    ↓
+Voice Synthesis (Edge TTS/Coqui)
+    ↓
+Video Composition (MoviePy)
+    ↓
+Final Output (MP4)
+```
+
+## Testing
 
 ```bash
-docker-compose up -d
+# Run test suite
+python scripts/test.py
+
+# Quick health check
+curl http://localhost:8000/health
 ```
 
-This starts both API and Redis backend services.
-
-### Production Docker Build
+## Development
 
 ```bash
-make prod
+# Backend runs on port 8000
+python backend/main.py
+
+# Frontend runs on port 3000
+cd frontend && npm run dev
 ```
 
-## 🔧 Development Commands
+## Troubleshooting
 
+**FFmpeg not found:**
 ```bash
-python scripts/setup.py  # One-time setup
-pip install -r backend/requirements.txt  # Install deps
-python backend/main.py   # Start API (localhost:8000)
-make dev                 # Alternative development mode
+# Ubuntu/Debian
+sudo apt-get install ffmpeg
+
+# macOS
+brew install ffmpeg
 ```
 
-## 📚 Documentation Files
+**No API key configured:**
+Edit `config/services.yaml` and add your keys, then restart.
 
-- **README.md** - This file (project overview & quick start)
-- **docs/USAGE.md** - Complete usage guide with examples and troubleshooting
-- **config/*.example.yaml** - Configuration templates with comments
+## License
 
-## 🔐 Setup API Keys
-
-1. Get OpenAI API key: https://platform.openai.com/api-keys
-2. Get Pexels API key (FREE): https://www.pexels.com/api/
-3. Edit `config/services.yaml` and add your keys
-
-## 🛠️ Tech Stack
-
-### Backend
-- **Python 3.11+**: Main language
-- **FastAPI**: Async API framework
-- **SQLAlchemy**: ORM for database operations
-- **Celery + Redis**: Task queue (for production)
-- **MoviePy**: Video composition library
-
-### Services
-- **OpenAI/HuggingFace**: LLM for scene decomposition
-- **Pexels/Pixabay APIs**: Stock video download
-- **Edge TTS/Coqui**: Text-to-speech synthesis
-- **MoviePy**: Video editing and merging
-
-### Frontend
-- **React 18**: UI framework (Next.js)
-- **Tailwind CSS**: Utility-first styling
-
-## 🔐 Security Considerations
-
-1. **API Key Management**: Store in environment variables, not config files
-2. **CORS**: Configure allowed origins in production
-3. **Rate Limiting**: Implement for Pexels API calls
-4. **Input Validation**: All user inputs sanitized before processing
-5. **File Path Safety**: Use `os.path` and avoid path traversal
-
-## 📝 License
-
-MIT License - See LICENSE file for details.
+MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-**Status: PHASE 1 MVP COMPLETE ✅**
-**Builds: 2/4 completed** (Backend API + Frontend ready, pushed to GitHub)
-**GitHub**: https://github.com/govindtank/autovid
+Built with FastAPI, Next.js, and MoviePy.
