@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+.next/
+out/
+
+# Environment (NEVER COMMIT)
+.env
+.env.local
+.env.*.local
+.env.example
+
+# Backend Python
+backend/__pycache__/
+backend/*.pyc
+backend/venv/
+backend/.venv/
+backend/*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Credentials
+*.pem
+*.key
+*.credentials
