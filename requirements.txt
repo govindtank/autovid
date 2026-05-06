@@ -1,0 +1,45 @@
+# =====================================================================
+# AutoVid - Production Dependencies
+# Install with: pip3 install -r requirements.txt
+# =====================================================================
+
+# FastAPI Web Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# Database ORM
+sqlalchemy>=2.0.25
+psycopg2-binary>=2.9.9  # PostgreSQL adapter (or use sqlite for dev)
+
+# Media Processing with MoviePy
+moviepy>=1.0.3
+imageio>=2.34.0
+numpy>=1.24.0
+
+# Async Support
+aiofiles>=23.2.1
+asyncpg>=0.29.0
+redis>=5.0.0
+
+# HTTP Client for Downloads
+httpx>=0.26.0
+
+# Configuration & Utilities
+pydantic>=2.5.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+
+# Edge TTS Voice Synthesis (FREE, no API key needed!)
+edge-tts>=6.1.0
+
+# HuggingFace for LLM (alternative to OpenAI)
+huggingface-hub>=0.20.0
+torch>=2.1.0  # Required for HuggingFace models
+
+# Optional: For better image/video processing
+pillow>=10.1.0
+
+# Development & Testing
+pytest>=7.4.3
+pytest-asyncio>=0.21.0
+requests>=2.31.0
