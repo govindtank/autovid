@@ -1,16 +1,16 @@
 'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 export default function Home() {
   const [prompt, setPrompt] = useState('');
   const [outputPath, setOutputPath] = useState('/output/videos');
-  const [resolution, setResolution] = useState([1920, 1080]);
-  const [status, setStatus] = useState(null);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [resolution, setResolution] = useState<[number, number]>([1920, 1080]);
+  const [status, setStatus] = useState<string | null>(null);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
@@ -35,7 +35,7 @@ export default function Home() {
       setStatus('completed');
       setResult(data);
       
-    } catch (err) {
+    } catch (err: any) {
       setStatus(null);
       setError(err.message);
     }
